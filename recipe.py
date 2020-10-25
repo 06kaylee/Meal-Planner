@@ -49,7 +49,7 @@ def generate_pdf(random_week):
     title = Paragraph('Weekly Meals', styles['h1'])
     recipes_str = ""
     for day, value in random_week.items():
-        recipe_name = value[0];..;
+        recipe_name = value[0];
         ingredients = ", ".join([ingredient for ingredient in ingredients_list])
         recipes_str += f"{recipe_name}: {ingredients} <br /> <br />"
     info = Paragraph(recipes_str, styles['BodyText'])
@@ -85,9 +85,10 @@ def main():
             ingredients_str = ", ".join([ingredient for ingredient in ingredients_list])
             db.insert_recipe(conn, (name, category, ingredients_str))
         recipes = db.select_random_week(conn, chosen_options)
-        for recipe in recipes:
-            print(recipe)
+        # for recipe in recipes:
+        #     print(recipe)
         conn.close()
+        return recipes
     else:
         print("Cannot create connection to database.")
             
