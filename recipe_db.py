@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+import random
 
 def create_connection(db_file):
     """ Create a connection to the SQLite database
@@ -58,22 +59,30 @@ def select_by_category(conn, category):
     for row in rows:
         print(row)
 
-
-def select_random_week(conn, chosen_options):
+def select_random_week_takeout(conn, takeout):
     cur = conn.cursor()
-    if "Takeout" in chosen_options:
-        try:
-            day = int(input("What day would you like to eat takeout? Please select the day number. [12345] "))
-        except:
-            print("The day number chosen was not a number.")
-        sql = "SELECT * FROM recipes WHERE id IN (SELECT id FROM recipes ORDER BY RANDOM() LIMIT 4)"
-        cur.execute(sql)
-        rows = cur.fetchall()
-        rows.insert(day - 1, "Takeout")
-    else:
-        sql = "SELECT * FROM recipes WHERE id IN (SELECT id FROM recipes ORDER BY RANDOM() LIMIT 5)"
-        cur.execute(sql)
-        rows = cur.fetchall()
+    day = random.randint(1,5)
+    sql = "SELECT * FROM recipes WHERE id IN (SELECT id FROM recipes ORDER BY RANDOM() LIMIT 4)"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    rows.insert(day - 1, "Takeout")
+    return rows
+
+def select_random_week(conn):
+    cur = conn.cursor()
+    # if "Takeout" in chosen_options:
+    #     try:
+    #         day = int(input("What day would you like to eat takeout? Please select the day number. [12345] "))
+    #     except:
+    #         print("The day number chosen was not a number.")
+    #     sql = "SELECT * FROM recipes WHERE id IN (SELECT id FROM recipes ORDER BY RANDOM() LIMIT 4)"
+    #     cur.execute(sql)
+    #     rows = cur.fetchall()
+    #     rows.insert(day - 1, "Takeout")
+    
+    sql = "SELECT * FROM recipes WHERE id IN (SELECT id FROM recipes ORDER BY RANDOM() LIMIT 5)"
+    cur.execute(sql)
+    rows = cur.fetchall()
     return rows
 
 

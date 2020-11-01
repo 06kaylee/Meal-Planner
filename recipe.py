@@ -34,13 +34,13 @@ def read_recipes(file):
     return recipes
 
     
-def adjust_options(options):
-    chosen_options = []
-    for option, bool_value in options.items():
-        change_option = input(f"'{option}' is set to {bool_value}. Would you like to change it? (y/n) ")
-        if change_option.lower() == 'y' and bool_value == False:
-            chosen_options.append(option)
-    return chosen_options
+# def adjust_options(options):
+#     chosen_options = []
+#     for option, bool_value in options.items():
+#         change_option = input(f"'{option}' is set to {bool_value}. Would you like to change it? (y/n) ")
+#         if change_option.lower() == 'y' and bool_value == False:
+#             chosen_options.append(option)
+#     return chosen_options
 
 
 def generate_pdf(random_week):
@@ -57,7 +57,7 @@ def generate_pdf(random_week):
     report.build([title, empty_line, info, empty_line])
 
 
-def main():
+def main(takeout):
     database = ":memory:"
 
     sql_create_recipes_table = """CREATE TABLE IF NOT EXISTS recipes (
@@ -68,13 +68,12 @@ def main():
                                 );"""
     conn = db.create_connection(database)
 
-    all_options = {
-        "Takeout": False
-    }
+    # all_options = {
+    #     "Takeout": False
+    # }
 
 
-    chosen_options = adjust_options(all_options)
-
+    # chosen_options = adjust_options(all_options)
     
     if conn is not None:
         db.create_table(conn, sql_create_recipes_table)
@@ -84,9 +83,10 @@ def main():
             ingredients_list = info['Ingredients']
             ingredients_str = ", ".join([ingredient for ingredient in ingredients_list])
             db.insert_recipe(conn, (name, category, ingredients_str))
-        recipes = db.select_random_week(conn, chosen_options)
-        # for recipe in recipes:
-        #     print(recipe)
+        if takeout:
+            recipes = db.select_random_week_takeout(conn, takeout)
+        else:
+            recipes = db.select_random_week(conn)
         conn.close()
         return recipes
     else:
